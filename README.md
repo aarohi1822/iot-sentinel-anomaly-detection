@@ -140,6 +140,13 @@ Use the included sample data or upload your own CSV. The dashboard includes:
 - Decrease the percentile or threshold when anomalies are missed.
 - Increase smoothing slightly for noisy sensors, but avoid over-smoothing short anomalies.
 
+  ## Use Cases
+
+- Smart factory monitoring  
+- Predictive maintenance  
+- IoT sensor anomaly detection  
+- NASA-style telemetry analysis  
+
 ## Streamlit Cloud
 
 Deploy the repository and set the app entry point to:
