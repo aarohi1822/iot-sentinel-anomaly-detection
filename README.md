@@ -145,7 +145,10 @@ Use the included sample data or upload your own CSV. The dashboard includes:
 - Smart factory monitoring  
 - Predictive maintenance  
 - IoT sensor anomaly detection  
-- NASA-style telemetry analysis  
+- NASA-style telemetry analysis
+
+## Live Demo
+https://iot-sentinel.streamlit.app/
 
 ## Streamlit Cloud
 
