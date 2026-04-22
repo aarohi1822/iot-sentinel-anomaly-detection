@@ -46,7 +46,15 @@ app/
 requirements.txt
 README.md
 ```
+## What Makes This Different
 
+Unlike typical anomaly detection projects:
+- Detects anomalies AND explains root cause
+- Simulates real-time IoT streaming
+- Provides system health scoring
+- Includes threshold experimentation lab
+
+  
 ## Data Format
 
 Use a CSV with numeric sensor columns. If a `label` column exists, `label=0` is treated as normal and used for training. A timestamp column is optional.
