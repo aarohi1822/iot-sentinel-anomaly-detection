@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 
-DEFAULT_MODEL_PATH = Path("models/lstm_autoencoder.keras")
+DEFAULT_MODEL_PATH = Path("models/lstm_autoencoder.weights.h5")
 DEFAULT_SCALER_PATH = Path("models/scaler.pkl")
 DEFAULT_CONFIG_PATH = Path("models/config.json")
 
