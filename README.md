@@ -70,6 +70,10 @@ timestamp,sensor_1,sensor_2,sensor_3,label
 2026-01-01 00:00:00,0.12,12.4,5.8,0
 2026-01-01 00:01:00,0.14,12.6,5.7,0
 ```
+## Sample Output
+
+timestamp | anomaly_score | threshold | severity | root_cause
+2026-01-01 00:10 | 0.87 | 0.45 | Critical | vibration
 
 ## Setup
 
