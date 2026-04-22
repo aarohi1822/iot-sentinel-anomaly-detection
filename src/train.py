@@ -83,7 +83,10 @@ def train(
     ensure_parent(model_path)
     ensure_parent(scaler_path)
     ensure_parent(config_path)
-    model.save_weights(model_path.replace(".keras", ".weights.h5"))
+
+    # ✅ FIXED: save full model instead of weights
+    model.save(model_path)
+
     save_scaler(scaler, scaler_path)
     save_json(
         {
