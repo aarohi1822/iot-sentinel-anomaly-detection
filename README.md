@@ -1,6 +1,6 @@
 # IoT Sentinel: Explainable IoT Sensor Anomaly Detection
 
-Production-ready LSTM autoencoder project for explainable anomaly detection on multivariate IoT time-series data, inspired by NASA SMAP/MSL style telemetry.
+Explainable Real-Time IoT Sensor Anomaly Detection with Root-Cause Analysis, Health Scoring, and Live Monitoring Dashboard.
 
 ## Features
 
