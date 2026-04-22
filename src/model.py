@@ -21,6 +21,8 @@ def build_lstm_autoencoder(
     return model
 
 
-def load_trained_model(path: str):
-    return keras.models.load_model(path, compile=False)
+def load_trained_model(path: str, window_size: int, n_features: int):
+    model = build_lstm_autoencoder(window_size, n_features)
+    model.load_weights(path.replace(".keras", ".weights.h5"))
+    return model
 

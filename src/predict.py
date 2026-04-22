@@ -5,9 +5,9 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from tensorflow import keras
 
 from data_loader import load_csv, split_features_labels
+from model import load_trained_model
 from preprocess import align_sequence_scores, create_sequences, load_scaler, transform_features
 from utils import (
     DEFAULT_CONFIG_PATH,
@@ -62,21 +62,18 @@ def detect_anomalies(
     timestamp_col = timestamp_col or config.get("timestamp_col")
 
     features, _, timestamps = split_features_labels(df, label_col=label_col, timestamp_col=timestamp_col)
-
     missing = [col for col in feature_columns if col not in features.columns]
     if missing:
         raise ValueError(f"Missing expected feature columns: {missing}")
-
     features = features[feature_columns]
 
     scaler = load_scaler(str(scaler_path))
-    model = keras.models.load_model(str(model_path), compile=False)
+    n_features = len(feature_columns)
+    model = load_trained_model(str(model_path), window_size, n_features)
 
     scaled = transform_features(features, scaler)
     sequences = create_sequences(scaled, window_size=window_size)
-
     sequence_scores, feature_scores = reconstruction_details(model, sequences)
-
     row_scores = align_sequence_scores(sequence_scores, len(df), window_size)
     row_feature_scores = align_feature_scores(feature_scores, len(df), window_size)
 
@@ -90,7 +87,6 @@ def detect_anomalies(
         threshold_method = threshold_method or config.get("threshold_method", "percentile")
         percentile = float(percentile or config.get("percentile", 99.0))
         k = float(k or config.get("k", 3.0))
-
         threshold = calculate_threshold(
             smoothed_scores,
             method=threshold_method,
@@ -99,15 +95,12 @@ def detect_anomalies(
         )
 
     anomaly_indices = np.flatnonzero(smoothed_scores > threshold)
-
     report = build_anomaly_report(anomaly_indices, smoothed_scores, float(threshold), timestamps)
 
     if len(anomaly_indices):
         root_causes = [
-            feature_columns[int(np.argmax(row_feature_scores[index]))]
-            for index in anomaly_indices
+            feature_columns[int(np.argmax(row_feature_scores[index]))] for index in anomaly_indices
         ]
-
         report["root_cause_sensor"] = root_causes
         report["severity"] = np.where(
             report["anomaly_score"] >= float(threshold) * 1.6,
@@ -140,7 +133,6 @@ def main() -> None:
     args = parser.parse_args()
 
     df = load_csv(args.input)
-
     result = detect_anomalies(
         df,
         label_col=args.label_col,
@@ -153,9 +145,7 @@ def main() -> None:
 
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
     result["report"].to_csv(output_path, index=False)
-
     print(f"Detected {len(result['anomaly_indices'])} anomalies.")
     print(f"Threshold: {result['threshold']:.8f}")
     print(f"Report saved to {output_path}")
