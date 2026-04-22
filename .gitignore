@@ -1,11 +1,8 @@
 __pycache__/
-*.py[cod]
-.venv/
+*.pyc
 .env
+.venv/
+models/*.keras
+models/*.weights.h5
+*.weights.h5
 .DS_Store
-.streamlit/secrets.toml
-data/raw/*.csv
-data/processed/*.csv
-!data/raw/train.csv
-!data/processed/anomaly_report.csv
-*.log

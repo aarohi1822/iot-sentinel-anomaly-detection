@@ -68,7 +68,8 @@ def detect_anomalies(
     features = features[feature_columns]
 
     scaler = load_scaler(str(scaler_path))
-    model = load_trained_model(str(model_path))
+    n_features = len(feature_columns)
+    model = load_trained_model(str(model_path), window_size, n_features)
 
     scaled = transform_features(features, scaler)
     sequences = create_sequences(scaled, window_size=window_size)
