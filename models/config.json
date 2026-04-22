@@ -9,11 +9,11 @@
   ],
   "label_col": "label",
   "timestamp_col": null,
-  "threshold": 0.08476763550565075,
+  "threshold": 0.09091805024996782,
   "threshold_method": "percentile",
   "percentile": 99.0,
   "k": 3.0,
   "smoothing_window": 5,
-  "train_score_mean": 0.04297437590502763,
-  "train_score_std": 0.01302810297367201
+  "train_score_mean": 0.05060641660341664,
+  "train_score_std": 0.013860987907374011
 }
