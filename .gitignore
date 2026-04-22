@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.DS_Store
+.streamlit/secrets.toml
+data/raw/*.csv
+data/processed/*.csv
+!data/raw/train.csv
+!data/processed/anomaly_report.csv
+*.log
