@@ -27,7 +27,7 @@ The Streamlit app is organized like a monitoring product:
 - **Threshold Lab**: compares trained, percentile, mean/std, and manual thresholds
 - **Report**: downloadable anomaly report with severity and root-cause sensor
 
-  ## Architecture
+## Architecture
 
 Data → Preprocessing → LSTM Autoencoder → Reconstruction Error → Thresholding → Explainability → Dashboard
 
