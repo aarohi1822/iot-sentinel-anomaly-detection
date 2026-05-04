@@ -148,7 +148,7 @@ Use the included sample data or upload your own CSV. The dashboard includes:
 - NASA-style telemetry analysis
 
 ## Live Demo
-https://iot-sentinel.streamlit.app/
+https://iot-sentinel-aarohigs.streamlit.app/
 
 ## Streamlit Cloud
 
