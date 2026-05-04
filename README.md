@@ -102,6 +102,8 @@ timestamp,sensor_1,sensor_2,sensor_3,label
 ---
 
 ## Project Structure
+
+```
 iot-sentinel/
 ├── data/
 │   ├── raw/                      # place train.csv / test.csv here
@@ -119,6 +121,7 @@ iot-sentinel/
 │   └── app.py                    # Streamlit dashboard entry point
 ├── requirements.txt
 └── README.md
+```
 
 ---
 
