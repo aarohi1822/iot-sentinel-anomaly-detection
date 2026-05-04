@@ -253,10 +253,12 @@ benchmark_summary, benchmark_metrics = load_benchmark_artifacts()
 
 with st.sidebar:
     st.header("Data")
-    data_source = st.radio("Input source", ["Sample data", "Upload CSV"], horizontal=True)
+    data_source = st.radio("Monitoring source", ["Demo data", "Upload CSV"], horizontal=True)
     uploaded_file = None
     if data_source == "Upload CSV":
         uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
+    else:
+        st.caption("Demo data powers the live monitoring tabs. NASA SMAP results live in the Benchmark tab.")
     timestamp_col = st.text_input("Timestamp column", value=config.get("timestamp_col") or "")
     label_col = st.text_input("Label column", value=config.get("label_col") or "label")
 
@@ -277,11 +279,11 @@ with st.sidebar:
     manual_threshold = None if use_saved_threshold else manual_threshold_value
 
 if data_source == "Upload CSV" and uploaded_file is None:
-    st.info("Upload a CSV file or switch to Sample data in the sidebar.")
+    st.info("Upload a CSV file or switch to Demo data in the sidebar.")
     st.stop()
 
 try:
-    df = load_csv(SAMPLE_DATA_PATH if data_source == "Sample data" else uploaded_file)
+    df = load_csv(SAMPLE_DATA_PATH if data_source == "Demo data" else uploaded_file)
     result = detect_anomalies(
         df,
         label_col=label_col,
@@ -415,6 +417,7 @@ with threshold_tab:
 
 with benchmark_tab:
     st.subheader("NASA SMAP Benchmark")
+    st.caption("These results come from saved SMAP benchmark artifacts and are independent of the demo/uploaded monitoring data.")
     if benchmark_summary is None or benchmark_metrics is None:
         st.info(
             "Run `python src/download_nasa_data.py` and "
