@@ -1,0 +1,39 @@
+{
+  "dataset": "SMAP",
+  "channel_count": 1,
+  "window_size": 60,
+  "epochs": 5,
+  "batch_size": 256,
+  "latent_dim": 32,
+  "threshold_method": "percentile",
+  "percentile": 99.0,
+  "k": 3.0,
+  "smoothing_window": 5,
+  "runtime_seconds": 577.67,
+  "lstm_autoencoder": {
+    "precision": 0.17736637802329053,
+    "recall": 0.01086002632733655,
+    "f1": 0.020466879145490568,
+    "roc_auc": 0.4038830411386509,
+    "adjusted_precision": 0.885059868997455,
+    "adjusted_recall": 0.3878528594412754,
+    "adjusted_f1": 0.5393504099663129,
+    "anomaly_points": 54696,
+    "evaluated_points": 427617,
+    "predicted_anomalies": 3349
+  },
+  "isolation_forest": {
+    "precision": 0.10667169242367132,
+    "recall": 0.005174052947199064,
+    "f1": 0.009869396153376694,
+    "roc_auc": 0.612336702925375,
+    "adjusted_precision": 0.9256727090259048,
+    "adjusted_recall": 0.5396372678075179,
+    "adjusted_f1": 0.6818045321198402,
+    "anomaly_points": 54696,
+    "evaluated_points": 427617,
+    "predicted_anomalies": 2653
+  },
+  "f1_improvement_vs_isolation_forest_pct": 1.06,
+  "adjusted_f1_improvement_vs_isolation_forest_pct": -14.25
+}

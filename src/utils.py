@@ -11,6 +11,8 @@ import pandas as pd
 DEFAULT_MODEL_PATH = Path("models/lstm_autoencoder.weights.h5")
 DEFAULT_SCALER_PATH = Path("models/scaler.pkl")
 DEFAULT_CONFIG_PATH = Path("models/config.json")
+DEFAULT_SMAP_METRICS_PATH = Path("data/processed/smap_channel_metrics.csv")
+DEFAULT_SMAP_SUMMARY_PATH = Path("data/processed/smap_benchmark_summary.json")
 
 
 def ensure_parent(path: str | Path) -> Path:
@@ -71,4 +73,3 @@ def build_anomaly_report(
     if timestamps is not None:
         report.insert(1, "timestamp", timestamps.iloc[indices].to_numpy())
     return report
-

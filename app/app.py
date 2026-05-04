@@ -16,7 +16,14 @@ if str(SRC) not in sys.path:
 
 from data_loader import load_csv  # noqa: E402
 from predict import detect_anomalies  # noqa: E402
-from utils import DEFAULT_CONFIG_PATH, DEFAULT_MODEL_PATH, DEFAULT_SCALER_PATH, load_json  # noqa: E402
+from utils import (  # noqa: E402
+    DEFAULT_CONFIG_PATH,
+    DEFAULT_MODEL_PATH,
+    DEFAULT_SCALER_PATH,
+    DEFAULT_SMAP_METRICS_PATH,
+    DEFAULT_SMAP_SUMMARY_PATH,
+    load_json,
+)
 
 SAMPLE_DATA_PATH = ROOT / "data" / "raw" / "train.csv"
 
@@ -77,6 +84,12 @@ st.markdown(
 
 def model_assets_ready() -> bool:
     return DEFAULT_MODEL_PATH.exists() and DEFAULT_SCALER_PATH.exists() and DEFAULT_CONFIG_PATH.exists()
+
+
+def load_benchmark_artifacts() -> tuple[dict | None, pd.DataFrame | None]:
+    summary = load_json(DEFAULT_SMAP_SUMMARY_PATH) if DEFAULT_SMAP_SUMMARY_PATH.exists() else None
+    metrics = pd.read_csv(DEFAULT_SMAP_METRICS_PATH) if DEFAULT_SMAP_METRICS_PATH.exists() else None
+    return summary, metrics
 
 
 def x_axis(df: pd.DataFrame, timestamp_col: str | None):
@@ -236,6 +249,7 @@ if not model_assets_ready():
     st.stop()
 
 config = load_json(DEFAULT_CONFIG_PATH)
+benchmark_summary, benchmark_metrics = load_benchmark_artifacts()
 
 with st.sidebar:
     st.header("Data")
@@ -306,8 +320,8 @@ elif status == "Warning":
 else:
     st.markdown('<span class="status-critical">System status: Critical</span>', unsafe_allow_html=True)
 
-monitor_tab, live_tab, explain_tab, threshold_tab, report_tab = st.tabs(
-    ["Monitor", "Live Replay", "Root Cause", "Threshold Lab", "Report"]
+monitor_tab, live_tab, explain_tab, threshold_tab, benchmark_tab, report_tab = st.tabs(
+    ["Monitor", "Live Replay", "Root Cause", "Threshold Lab", "Benchmark", "Report"]
 )
 
 with monitor_tab:
@@ -398,6 +412,65 @@ with threshold_tab:
         margin=dict(l=20, r=20, t=55, b=20),
     )
     st.plotly_chart(threshold_fig, use_container_width=True)
+
+with benchmark_tab:
+    st.subheader("NASA SMAP Benchmark")
+    if benchmark_summary is None or benchmark_metrics is None:
+        st.info(
+            "Run `python src/download_nasa_data.py` and "
+            "`python src/benchmark_smap.py --spacecraft SMAP` to populate benchmark results."
+        )
+    else:
+        summary_cols = st.columns(5)
+        ae_summary = benchmark_summary["lstm_autoencoder"]
+        if_summary = benchmark_summary["isolation_forest"]
+        summary_cols[0].metric("Dataset", benchmark_summary["dataset"])
+        summary_cols[1].metric("Channels", f"{benchmark_summary['channel_count']}")
+        summary_cols[2].metric("AE F1", f"{ae_summary['f1']:.3f}")
+        summary_cols[3].metric("IF F1", f"{if_summary['f1']:.3f}")
+        summary_cols[4].metric(
+            "Adj F1 lift",
+            f"{benchmark_summary.get('adjusted_f1_improvement_vs_isolation_forest_pct', 0):+.2f} pts",
+        )
+
+        comparison = pd.DataFrame(
+            [
+                {
+                    "model": "LSTM Autoencoder",
+                    "precision": ae_summary["precision"],
+                    "recall": ae_summary["recall"],
+                    "f1": ae_summary["f1"],
+                    "adjusted_f1": ae_summary.get("adjusted_f1", np.nan),
+                    "roc_auc": ae_summary["roc_auc"],
+                },
+                {
+                    "model": "Isolation Forest",
+                    "precision": if_summary["precision"],
+                    "recall": if_summary["recall"],
+                    "f1": if_summary["f1"],
+                    "adjusted_f1": if_summary.get("adjusted_f1", np.nan),
+                    "roc_auc": if_summary["roc_auc"],
+                },
+            ]
+        )
+        st.dataframe(
+            comparison.style.format(
+                {
+                    "precision": "{:.4f}",
+                    "recall": "{:.4f}",
+                    "f1": "{:.4f}",
+                    "adjusted_f1": "{:.4f}",
+                    "roc_auc": "{:.4f}",
+                }
+            ),
+            use_container_width=True,
+            hide_index=True,
+        )
+        st.dataframe(
+            benchmark_metrics.sort_values("ae_f1", ascending=False),
+            use_container_width=True,
+            hide_index=True,
+        )
 
 with report_tab:
     left, right = st.columns([0.65, 0.35])

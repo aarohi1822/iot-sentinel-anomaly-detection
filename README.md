@@ -1,6 +1,6 @@
 # IoT Sentinel: Explainable IoT Sensor Anomaly Detection
 
-Explainable Real-Time IoT Sensor Anomaly Detection with Root-Cause Analysis, Health Scoring, and Live Monitoring Dashboard.
+Explainable real-time IoT sensor anomaly detection with root-cause analysis, health scoring, live monitoring, and a reproducible NASA SMAP benchmark.
 
 ## Features
 
@@ -50,13 +50,28 @@ app/
 requirements.txt
 README.md
 ```
+## Benchmark Results
+
+This repository now includes a real SMAP benchmark run instead of only a demo dataset.
+
+Latest recorded benchmark (`data/processed/smap_benchmark_summary.json`):
+
+- **Dataset:** NASA SMAP benchmark via the public TSLib mirror
+- **LSTM Autoencoder:** Precision `0.1774`, Recall `0.0109`, F1 `0.0205`, ROC-AUC `0.4039`
+- **Isolation Forest baseline:** Precision `0.1067`, Recall `0.0052`, F1 `0.0099`, ROC-AUC `0.6123`
+- **Pointwise F1 lift vs Isolation Forest:** `+107.07%`
+- **Point-adjusted F1:** LSTM Autoencoder `0.5394`, Isolation Forest `0.6818`
+
+This project reports both raw pointwise metrics and point-adjusted F1 so the benchmark is explicit instead of cherry-picked.
+
 ## What Makes This Different
 
-Unlike typical anomaly detection projects:
-- Detects anomalies AND explains root cause
-- Simulates real-time IoT streaming
-- Provides system health scoring
-- Includes threshold experimentation lab
+Unlike typical anomaly detection projects, this one is both product-shaped and benchmarked:
+- Real benchmark artifacts for NASA SMAP, not just screenshots
+- Detects anomalies and explains likely root-cause sensors
+- Simulates real-time IoT streaming in the dashboard
+- Provides health scoring and anomaly severity levels
+- Includes threshold experimentation and baseline comparison
 
   
 ## Data Format
@@ -105,7 +120,7 @@ python src/train.py \
 
 Training creates:
 
-- `models/lstm_autoencoder.keras`
+- `models/lstm_autoencoder.weights.h5`
 - `models/scaler.pkl`
 - `models/config.json`
 
@@ -116,6 +131,27 @@ python src/predict.py --input data/raw/test.csv --output data/processed/anomaly_
 ```
 
 The report contains row indices, anomaly scores, threshold, and timestamp when available.
+
+## Benchmark On NASA SMAP
+
+Download the benchmark data:
+
+```bash
+python src/download_nasa_data.py
+```
+
+Run the SMAP benchmark:
+
+```bash
+python src/benchmark_smap.py --spacecraft SMAP --epochs 5 --batch-size 256
+```
+
+This creates:
+
+- `data/processed/smap_channel_metrics.csv`
+- `data/processed/smap_benchmark_summary.json`
+
+The Streamlit dashboard reads these files automatically in the **Benchmark** tab.
 
 ## Streamlit UI
 
@@ -129,6 +165,7 @@ Use the included sample data or upload your own CSV. The dashboard includes:
 - Live replay mode for real-time IoT simulation
 - Root-cause view showing the sensor most responsible for each anomaly
 - Threshold lab comparing trained, percentile, mean/std, and manual thresholds
+- Benchmark tab with SMAP vs Isolation Forest metrics
 - Anomaly report with severity and download support
 
 ## Accuracy Notes
